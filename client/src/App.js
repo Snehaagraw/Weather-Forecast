@@ -1,13 +1,16 @@
 import './App.css';
 import React, { useState } from 'react';
-import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
+import CitySearch from './components/CitySearch';
 import axios from 'axios';
 
 function App() {
   const[weatherData, setWeatherData] = useState(null);
+  const[selectedCity, setSelectedCity] = useState("");
   const[loading, setLoading] = useState(false);
   const[error, setError] = useState("");
+
+  const API_KEY = process.env.REACT_APP_GEODB_API_KEY;
 
   const fetchWeather = async (city) => {
     setLoading(true);
@@ -22,10 +25,15 @@ function App() {
     setLoading(false);
   };
 
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+    fetchWeather(city);
+  };
+
   return (
     <div className="App">
       <h1>Real-Time Weather Dashboard</h1>
-      <SearchBar onSearch={fetchWeather} />
+      <CitySearch onSelectCity={handleCitySelect} />
       {loading && <p>Loading...</p>}
       {error && <p style={{color:"red"}}>{error}</p>}
       {weatherData && <WeatherCard data={weatherData} />}
